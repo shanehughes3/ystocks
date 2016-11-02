@@ -1,0 +1,22 @@
+{
+  "name": "ystocks",
+  "version": "0.0.1",
+  "description": "A wrapper for the Yahoo Finance API",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "node test/all.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shanehughes3/ystocks.git"
+  },
+  "author": "Shane Hughes",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/shanehughes3/ystocks/issues"
+  },
+  "homepage": "https://github.com/shanehughes3/ystocks#readme"
+}
