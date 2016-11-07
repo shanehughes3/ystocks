@@ -89,7 +89,12 @@ function checkHistoryParams(params) {
 }
 
 function formatDate(dateString) {
-    const date = new Date(dateString + "UTC");
+    let date = "";
+    if (dateString) {
+	date = new Date(dateString + "UTC");
+    } else {
+	date = new Date();
+    }
     return date.toISOString().slice(0,10);
 }
 
@@ -98,13 +103,17 @@ function sendRequest(options, internalCb) {
 	let data = "";
 	res.on("data", (d) => {data += d});
 	res.on("end", function() {
-	    data = JSON.parse(data);
-	    if (data.error) {
-		const err = new Error(data.error.description);
-		err.name = "ResponseError";
-		internalCb(err);
-	    } else {
-		internalCb(null, data);
+	    try {
+		data = JSON.parse(data);
+		if (data.error) {
+		    const err = new Error(data.error.description);
+		    err.name = "ResponseError";
+		    internalCb(err);
+		} else {
+		    internalCb(null, data);
+		}
+	    } catch (e) {
+		internalCb(e);
 	    }
 	});
     });
