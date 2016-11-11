@@ -26,8 +26,7 @@ function Api() {
 		      [data.query.results.quote];
 		cb(null, results, removeResults(data));
 	    } else {
-		console.log("here");
-		cb(null, data);
+		cb(null, null, removeResults(data));
 	    }
 	}); 
     }
@@ -125,7 +124,7 @@ function sendRequest(options, internalCb) {
 
 function removeResults(responseObject) {
     delete(responseObject.query.results);
-    return responseObject;
+    return responseObject.query;
 }
 
 module.exports = Api;
