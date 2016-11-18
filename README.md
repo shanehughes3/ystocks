@@ -59,24 +59,24 @@ single string (`"MSFT"`).
 
 ```js
 Api.quote(["F", "YHOO"], function(err, data, meta) {
-    if (err) {
-        console.log(err);
-    } else {
-        console.log(data[0].Symbol);    // "F"
-		console.log(data[0].Name);      // "Ford Motor Company Common Stock"
-		console.log(data[1].Ask);       // "40.05"
+	if (err) {
+		console.log(err);
+	} else {
+		console.log(data[0].Symbol);	// "F"
+		console.log(data[0].Name);		// "Ford Motor Company Common Stock"
+		console.log(data[1].Ask);		// "40.05"
 		console.log(data[1].PercentChangeFromYearLow); // "+53.58%"
-    }
+	}
 });
 
 Api.quote(["FOOBAR"], function(err, data, meta) {
-    if (err) {
-        console.log(err);               // null
-    } else {
-      	console.log(data[0].Name);		// null
+	if (err) {
+		console.log(err);				// null
+	} else {
+		console.log(data[0].Name);		// null
 		console.log(meta.count);		// 1
 		console.log(meta.created);		// "2016-11-11T02:04:49Z"
-    }
+	}
 });
 ```
 
@@ -109,26 +109,26 @@ Api.history(params, function(err, data, meta) {
         console.log(err);
     } else if (data) {
         console.log(data[0].Date);        // "2010-03-10"
-		console.log(data[0].Adj_Close);   // "287.937542"
-    } else {
-        console.log("No results!");
-    }
+		console.log(data[0].Adj_Close);	  // "287.937542"
+	} else {
+		console.log("No results!");
+	}
 });
 
 params = {
-    symbol: "FOOBAR",
-    start: "2012-08-19",
-    end: "2013-09-25"
+	symbol: "FOOBAR",
+	start: "2012-08-19",
+	end: "2013-09-25"
 };
 
 Api.history(params, function(err, data, meta) {
-    if (err) {
-        console.log(err);
-    } else if (data) {
-        console.log(data[0].Open);
-    } else {
-        console.log("No results!");        // "No results!"
-    }
+	if (err) {
+		console.log(err);
+	} else if (data) {
+		console.log(data[0].Open);
+	} else {
+		console.log("No results!");		   // "No results!"
+	}
 });
 ```
 
