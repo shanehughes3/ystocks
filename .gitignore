@@ -1,4 +1,5 @@
 node_modules/
+test/with-auth.js
 *~
 *.tgz
 *.log

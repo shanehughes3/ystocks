@@ -1,12 +1,20 @@
-const https = require("https");
+const https = require("https"),
+      OAuth = require("./auth");
 
-function Api() {
+function Api(authParams) {
     if (!(this instanceof Api)) {
 	return new Api();
     }
+
+    this.auth = null;
+
+    if (typeof authParams === "object") {
+	this.auth = new OAuth(authParams);
+    }
     
     const yahooHostname = "query.yahooapis.com",
-	  basePath = "/v1/public/yql?format=json&env=store://datatables.org/alltableswithkeys";
+	  basePath = "/v1/public/yql?format=json&" +
+	  "env=store://datatables.org/alltableswithkeys";
     
     this.quote = function(symbols, cb) {
 	if (!Array.isArray(symbols)) {
