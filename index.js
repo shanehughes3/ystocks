@@ -5,7 +5,8 @@ function Api(authParams) {
     if (!(this instanceof Api)) {
 	return new Api();
     }
-
+    
+    const self = this;
     this.auth = null;
 
     if (typeof authParams === "object") {
@@ -13,18 +14,15 @@ function Api(authParams) {
     }
     
     const yahooHostname = "query.yahooapis.com",
-	  basePath = "/v1/public/yql?format=json&" +
-	  "env=store://datatables.org/alltableswithkeys";
+	  basePathPublic = "/v1/public/yql?format=json&" +
+	  "env=store://datatables.org/alltableswithkeys",
+	  basePathWithAuth = "/v1/yql?format=json&env=store://datatables.org/alltableswithkeys";
     
     this.quote = function(symbols, cb) {
 	if (!Array.isArray(symbols)) {
 	    symbols = [symbols];
 	}
-	const options = {
-	    hostname: yahooHostname,
-	    path: generateStockPath(symbols),
-	    method: "GET"
-	};
+	const options = generateOptions(generateStockPath(symbols));
 	sendRequest(options, function(err, data) {
 	    if (err) {
 		cb(err);
@@ -42,12 +40,7 @@ function Api(authParams) {
     this.history = function(params, cb) {
 	try {
 	    params = checkHistoryParams(params);
-
-	    const options = {
-		hostname: yahooHostname,
-		path: generateHistoryPath(params),
-		method: "GET"
-	    };
+	    const options = generateOptions(generateHistoryPath(params));
 	    sendRequest(options, function(err, data) {
 		if (err) {
 		    cb(err);
@@ -59,12 +52,24 @@ function Api(authParams) {
 	    });
 	} catch(e) {
 	    cb(e);
+ 	}
+    }
+
+    function generateOptions(queryPath) {
+	if (self.auth) {
+	    return self.auth.getAuthQueryParams(queryPath);
+	} else {
+	    const options = {
+		method: "GET",
+		hostname: yahooHostname,
+		path: basePathPublic + "&q=" + encodeURIComponenet(queryPath)
+	    };
+	    return options;
 	}
     }
     
     function generateStockPath(symbols) {
-	output = basePath;
-	output += "&q=select * from yahoo.finance.quotes where symbol in (";
+	let output = "select * from yahoo.finance.quotes where symbol in (";
 	symbols.forEach(function(symbol, index) {
 	    if (index > 0) {
 		output += ",";
@@ -72,16 +77,15 @@ function Api(authParams) {
 	    output += "'" + symbol + "'";
 	});
 	output += ")";
-	return encodeURI(output);
+	return output;
     }
     
     function generateHistoryPath(params) {
-	output = basePath;
-	output += "&q=select * from yahoo.finance.historicaldata where ";
+	let output = "select * from yahoo.finance.historicaldata where ";
 	output += `symbol = "${params.symbol}" and `;
 	output += `startDate = "${params.start}" and `;
 	output += `endDate = "${params.end}"`;
-	return encodeURI(output);
+	return output;
     }
 }
 
@@ -120,7 +124,9 @@ function sendRequest(options, internalCb) {
 		    internalCb(null, data);
 		}
 	    } catch (e) {
-		internalCb(e);
+		let err = new Error("There was a problem authenticating the request");
+		err.name = "AuthenticationError";
+		internalCb(err);
 	    }
 	});
     });

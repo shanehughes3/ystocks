@@ -1,42 +1,56 @@
 const https = require("https"),
-      requestHostname = "api.login.yahoo.com",
-      requestBasePath = "/oauth/v2/get_request_token";
+      qs = require("querystring"),
+      crypto = require("crypto"),
+      requestHostname = "query.yahooapis.com",
+      requestBasePath = "/v1/yql",
+      requestBaseQuery = "?env=store://datatables.org/alltableswithkeys" +
+      "&format=json";
 
 function OAuth(authParams) {
 
-    sendRequest();
-
-    function sendRequest() {
-	const req = https.request(buildRequestOptionsObject(), function(res) {
-	    let data = "";
-	    res.on("data", (d) => {data += d});
-	    res.on("end", function() {
-		console.log(data); //////
-	    });
-	});
-	req.on("error", (e) => console.log(e));
-	req.end();
+    this.getAuthQueryParams = function(yqlQuery) {
+	return buildRequestOptionsObject(yqlQuery);
     }
 
-    function buildRequestOptionsObject() {
+    function buildRequestOptionsObject(yqlQuery) {
 	const output = {
 	    hostname: requestHostname,
-	    path: requestBasePath + buildRequestQueryString(),
+	    path: requestBasePath +
+		buildRequestQueryString(yqlQuery),
 	    method: "GET"
 	};
 	return output;
     }
 
-    function buildRequestQueryString() {
-	let output = "?oauth_timestamp=" + Date.now();
-	output += "\&oauth_nonce=" + generateNonce();
-	output += "\&oauth_consumer_key=" + authParams.key;
-	output += "\&oauth_signature_method=plaintext";
-	output += "\&oauth_signature=" + authParams.secret + "%26";
-	output += "\&oauth_version=1.0";
-	output += "\&oauth_callback=oob";
+    function buildRequestQueryString(yqlQuery) {
+	let baseQuery = buildRequestQueryMinusSignature(yqlQuery);
+	const signature = generateSignature(baseQuery);
+	return `${baseQuery}&oauth_signature=${signature}`;
+    }
+
+    function buildRequestQueryMinusSignature(yqlQuery) {
+	let output = "?env=" + encode("store://datatables.org/alltableswithkeys");
+	output += "&format=json";
+	output += "&oauth_callback=oob";
+	output += "&oauth_consumer_key=" + authParams.key;
+	output += "&oauth_nonce=" + generateNonce();
+	output += "&oauth_signature_method=HMAC-SHA1";
+	output += "&oauth_timestamp=" + Math.floor(Date.now() / 1000);
+	output += "&oauth_version=1.0";
+	output += "&q=" + encode(yqlQuery);
 	return output;
-    } 
+    }
+
+    function generateSignature(baseQuery) {
+	let baseString = "GET&";
+	baseString += encode("https://" + requestHostname + requestBasePath);
+	baseString += "&" + encode(baseQuery.slice(1));
+	const passphrase = encode(authParams.secret) + "&";
+	const signature = crypto.createHmac("sha1", passphrase)
+	    .update(baseString)
+	    .digest("base64");
+	return encode(signature);
+    }
 
     function generateNonce() {
 	const nonceLength = 32;
@@ -49,6 +63,13 @@ function OAuth(authParams) {
 	}
 	return nonce;
     }
+}
+
+function encode(str) {
+    // encodes per RFC 3986
+    return encodeURIComponent(str).replace(/[!'()*]/g, function(c) {
+	return '%' + c.charCodeAt(0).toString(16).toUpperCase();
+    });
 }
 
 module.exports = OAuth;
