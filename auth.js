@@ -2,9 +2,7 @@ const https = require("https"),
       qs = require("querystring"),
       crypto = require("crypto"),
       requestHostname = "query.yahooapis.com",
-      requestBasePath = "/v1/yql",
-      requestBaseQuery = "?env=store://datatables.org/alltableswithkeys" +
-      "&format=json";
+      requestBasePath = "/v1/yql";
 
 function OAuth(authParams) {
 

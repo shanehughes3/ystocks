@@ -14,14 +14,14 @@ Api.quote(["GOOG", "AAPL"], function(err, data, meta) {
     } else {
         // do stuff with data
         console.log(data[0].AverageDailyVolume);     // "1394830"
-        console.log(meta.count);		     		 // 2
+        console.log(meta.count);					 // 2
     }
 });
 ```
 
 ## API
 
-### Import
+### Import/Authentication
 
 After importing the module, you must instatiate an api object:
 
@@ -30,9 +30,25 @@ const ystocks = require("ystocks"),
       Api = ystocks();
 ```
 
-In the future, authentication will take place at this time. For right now,
-however, every instance of the wrapper uses the public API. You can read more
-about hourly/daily limits on Yahoo's [YQL Guide](https://developer.yahoo.com/yql/guide/usage_info_limits.html).
+Passing no arguments to the constructor as above will create an object that
+uses the public version of the Yahoo! API. Users on the public API are subject
+to smaller request caps than authorized users, as detailed in Yahoo's
+[YQL Guide](https://developer.yahoo.com/yql/guide/usage_info_limits.html).
+To authenticate an API object, pass your Consumer Key and Consumer Secret as an
+object when you instantiate:
+
+```js
+const ystocks = require("ystocks");
+
+const params = {
+	key: <your_consumer_key>,
+	secret: <your_consumer_secret
+};
+
+const Api = ystocks(params);
+```
+
+Any errors in authentication will be passed upon calling the object's methods.
 
 ### Methods
 
