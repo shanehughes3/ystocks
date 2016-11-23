@@ -3,20 +3,21 @@ const https = require("https"),
 
 function Api(authParams) {
     if (!(this instanceof Api)) {
-	return new Api();
+	return new Api(authParams);
     }
     
     const self = this;
     this.auth = null;
 
     if (typeof authParams === "object") {
+	authParams.key = authParams.key || '';
+	authParams.secret = authParams.secret || '';
 	this.auth = new OAuth(authParams);
     }
     
     const yahooHostname = "query.yahooapis.com",
 	  basePathPublic = "/v1/public/yql?format=json&" +
-	  "env=store://datatables.org/alltableswithkeys",
-	  basePathWithAuth = "/v1/yql?format=json&env=store://datatables.org/alltableswithkeys";
+	  "env=store://datatables.org/alltableswithkeys";
     
     this.quote = function(symbols, cb) {
 	if (!Array.isArray(symbols)) {
@@ -62,7 +63,7 @@ function Api(authParams) {
 	    const options = {
 		method: "GET",
 		hostname: yahooHostname,
-		path: basePathPublic + "&q=" + encodeURIComponenet(queryPath)
+		path: basePathPublic + "&q=" + encodeURIComponent(queryPath)
 	    };
 	    return options;
 	}

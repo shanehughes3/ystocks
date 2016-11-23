@@ -50,17 +50,18 @@ function OAuth(authParams) {
 	return encode(signature);
     }
 
-    function generateNonce() {
-	const nonceLength = 32;
-	const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
-	      "abcdefghijklmnopqrstuvwxyz";
-	let nonce = "";
-	for (let i = 0; i < nonceLength; i++) {
-	    const randIndex = Math.floor(Math.random() * chars.length);
-	    nonce += chars[randIndex];
-	}
-	return nonce;
+}
+
+function generateNonce() {
+    const nonceLength = 32;
+    const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+	  "abcdefghijklmnopqrstuvwxyz";
+    let nonce = "";
+    for (let i = 0; i < nonceLength; i++) {
+	const randIndex = Math.floor(Math.random() * chars.length);
+	nonce += chars[randIndex];
     }
+    return nonce;
 }
 
 function encode(str) {
