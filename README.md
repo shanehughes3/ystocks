@@ -14,7 +14,7 @@ Api.quote(["GOOG", "AAPL"], function(err, data, meta) {
     } else {
         // do stuff with data
         console.log(data[0].AverageDailyVolume);     // "1394830"
-        console.log(meta.count);					 // 2
+        console.log(meta.count);                     // 2
     }
 });
 ```
@@ -41,8 +41,8 @@ object when you instantiate:
 const ystocks = require("ystocks");
 
 const params = {
-	key: <your_consumer_key>,
-	secret: <your_consumer_secret
+        key: <your_consumer_key>,
+        secret: <your_consumer_secret
 };
 
 const Api = ystocks(params);
@@ -64,7 +64,7 @@ Returns current value information for a given stock or stocks.
 `symbols` can either be an array of strings (`["GOOG", "YHOO"]`) or a
 single string (`"MSFT"`).
 
-`callback` is passed three parameters: `err`, `data`, and `callback`.
+`callback` is passed three parameters: `err`, `data`, and `meta`.
 
 - `err` is null on no error.
 - `data` is an array of result objects.
@@ -75,24 +75,24 @@ single string (`"MSFT"`).
 
 ```js
 Api.quote(["F", "YHOO"], function(err, data, meta) {
-	if (err) {
-		console.log(err);
-	} else {
-		console.log(data[0].Symbol);	// "F"
-		console.log(data[0].Name);		// "Ford Motor Company Common Stock"
-		console.log(data[1].Ask);		// "40.05"
-		console.log(data[1].PercentChangeFromYearLow); // "+53.58%"
-	}
+        if (err) {
+                console.log(err);
+        } else {
+                console.log(data[0].Symbol);          // "F"
+                console.log(data[0].Name);            // "Ford Motor Company Common Stock"
+                console.log(data[1].Ask);             // "40.05"
+                console.log(data[1].PercentChangeFromYearLow); // "+53.58%"
+        }
 });
 
 Api.quote(["FOOBAR"], function(err, data, meta) {
-	if (err) {
-		console.log(err);				// null
-	} else {
-		console.log(data[0].Name);		// null
-		console.log(meta.count);		// 1
-		console.log(meta.created);		// "2016-11-11T02:04:49Z"
-	}
+        if (err) {
+                console.log(err);                     // null
+        } else {
+                console.log(data[0].Name);            // null
+                console.log(meta.count);              // 1
+                console.log(meta.created);            // "2016-11-11T02:04:49Z"
+        }
 });
 ```
 
@@ -106,7 +106,7 @@ Returns historical stock data for a given stock over a given date range.
   javascript's `Date.parse()` method.
 - `end`: the end date, as above.
 
-`callback` is passed three parameters: `err`, `data`, and `callback`.
+`callback` is passed three parameters: `err`, `data`, and `meta`.
 - `err` is null on no error.
 - `data` is an array of result objects, or null on no response. The array is
   sorted with the newest result first.
@@ -124,27 +124,27 @@ Api.history(params, function(err, data, meta) {
     if (err) {
         console.log(err);
     } else if (data) {
-        console.log(data[0].Date);        // "2010-03-10"
-		console.log(data[0].Adj_Close);	  // "287.937542"
-	} else {
-		console.log("No results!");
-	}
+        console.log(data[0].Date);                // "2010-03-10"
+                console.log(data[0].Adj_Close);   // "287.937542"
+        } else {
+                console.log("No results!");
+        }
 });
 
 params = {
-	symbol: "FOOBAR",
-	start: "2012-08-19",
-	end: "2013-09-25"
+        symbol: "FOOBAR",
+        start: "2012-08-19",
+        end: "2013-09-25"
 };
 
 Api.history(params, function(err, data, meta) {
-	if (err) {
-		console.log(err);
-	} else if (data) {
-		console.log(data[0].Open);
-	} else {
-		console.log("No results!");		   // "No results!"
-	}
+        if (err) {
+                console.log(err);
+        } else if (data) {
+                console.log(data[0].Open);
+        } else {
+                console.log("No results!");       // "No results!"
+        }
 });
 ```
 
